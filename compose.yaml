@@ -38,7 +38,7 @@ configs:
           listen 443 ssl;
           server_name nginx;
 
-          ssl_certificate /opt/mtls/server-signed.cert.pem;
+          ssl_certificate /opt/mtls/server.cert.pem;
           ssl_certificate_key /opt/mtls/server.key.pem;
           ssl_client_certificate /opt/mtls/ca-bundle.cert.pem;
           ssl_verify_client on;
