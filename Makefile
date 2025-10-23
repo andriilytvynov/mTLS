@@ -15,24 +15,24 @@ up:
 	@echo "Generate Client CA pair..."
 	@docker exec -ti ${PROJECT}-client bash -c '\
 		openssl genrsa -out client-ca.key.pem 4096 && \
-		openssl req -x509 -new -key client-ca.key.pem -sha256 -days 3650 -out client-ca.cert.pem -subj "/C=XX/CN=CLIENT CA" '
+		openssl req -x509 -new -key client-ca.key.pem -sha256 -days 3650 -out client-ca.cert.pem -subj "/CN=CLIENT CA" '
 
 	@echo "Generate Client pair signed by Client CA..."
 	@docker exec -ti ${PROJECT}-client bash -c '\
 		openssl genrsa -out client.key.pem 2048 && \
-		openssl req -new -key client.key.pem -out client.cert.pem -subj "/CN=Client/C=XX" && \
+		openssl req -new -key client.key.pem -out client.cert.pem -subj "/CN=Client" && \
 		openssl x509 -req -in client.cert.pem -CA client-ca.cert.pem -CAkey client-ca.key.pem -CAcreateserial -out client-signed.cert.pem -days 365 -sha256 '
 	
 	@echo "Generate Server CA pair..."
 	@docker exec -ti ${PROJECT}-client bash -c '\
 		openssl genrsa -out server-ca.key.pem 4096 && \
-		openssl req -x509 -new -key server-ca.key.pem -sha256 -days 3650 -out server-ca.cert.pem -subj "/C=XX/CN=SERVER CA" '
+		openssl req -x509 -new -key server-ca.key.pem -sha256 -days 3650 -out server-ca.cert.pem -subj "/CN=SERVER CA" '
 	
 	@echo "Generate Server pair signed by Server CA..."
 	@echo "NOTE: CN equals server's hostname"
 	@docker exec -ti ${PROJECT}-client bash -c '\
 		openssl genrsa -out server.key.pem 2048 && \
-		openssl req -new -key server.key.pem -out server.cert.pem -subj "/CN=nginx/C=XX" && \
+		openssl req -new -key server.key.pem -out server.cert.pem -subj "/CN=nginx" && \
 		openssl x509 -req -in server.cert.pem -CA server-ca.cert.pem -CAkey server-ca.key.pem -CAcreateserial -out server-signed.cert.pem -days 365 -sha256 '
 
 	@echo "Compiling CA-bundle..."
