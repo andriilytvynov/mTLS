@@ -20,8 +20,8 @@ up:
 	@echo "Generate Client pair signed by Client CA..."
 	@docker exec -ti ${PROJECT}-client bash -c '\
 		openssl genrsa -out client.key.pem 2048 && \
-		openssl req -new -key client.key.pem -out client.cert.pem -subj "/CN=Client" && \
-		openssl x509 -req -in client.cert.pem -CA client-ca.cert.pem -CAkey client-ca.key.pem -CAcreateserial -out client-signed.cert.pem -days 365 -sha256 '
+		openssl req -new -key client.key.pem -out client.csr -subj "/CN=Client" && \
+		openssl x509 -req -in client.csr -CA client-ca.cert.pem -CAkey client-ca.key.pem -CAcreateserial -out client.cert.pem -days 365 -sha256 '
 	
 	@echo "Generate Server CA pair..."
 	@docker exec -ti ${PROJECT}-client bash -c '\
@@ -54,6 +54,6 @@ test:
 	@PROJECT=${PROJECT} \
 	 docker exec -ti ${PROJECT}-client bash -c '\
 		curl https://nginx/headers \
-			--cert client-signed.cert.pem \
+			--cert client.cert.pem \
 			--key client.key.pem \
 			--cacert ca-bundle.cert.pem '
